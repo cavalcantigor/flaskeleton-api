@@ -1,3 +1,5 @@
+[![Build Status](https://api.cirrus-ci.com/github/cavalcantigor/flaskeleton-api.svg)](https://cirrus-ci.com/github/cavalcantigor/flaskeleton-api)
+[![codecov](https://codecov.io/gh/cavalcantigor/flaskeleton-api/branch/master/graph/badge.svg)](https://codecov.io/gh/cavalcantigor/flaskeleton-api)
 ## Flaskeleton API
 > Uma aplicação minimalista e completamente funcional contemplando todas as características de uma API
 > completa utilizando *Flask*, *SQLAlchemy*, *Flask-Migrate*, *Marshmallow* e *APIBlueprint*.

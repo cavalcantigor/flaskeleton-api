@@ -1,0 +1,9 @@
+container:
+  image: python:3.6
+
+check_task:
+  install_script: pip install --upgrade pip && pip install -r requirements.txt
+  test_script: pytest -rpf
+  lint_script: flake8 ./app
+  coverage_script: coverage run -m pytest && coverage report
+  codecov_script: bash <(curl -s https://codecov.io/bash) -t 0660129b-fb9f-427c-a587-1fa37508c42c
