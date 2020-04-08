@@ -127,3 +127,6 @@ O Output será um arquivo ```index.html``` dentro de ```./app/templates/apidocs/
 que é servido através do endpoint da aplicação.
 
 *p.s: O arquivo base para esta documentação foi retirado de: [Definindo APIs com o API Blueprint](https://eltonminetto.net/post/2017-06-29-definindo-apis-com-api-blueprint/)*.
+
+### API multicontexto
+...
