@@ -3,7 +3,6 @@ from ..dao.aluno import AlunoDAO
 from ..models.aluno import Aluno, AlunoSchema
 from ..logger import logger
 from marshmallow import ValidationError
-import re
 
 
 class AlunoController:
@@ -51,7 +50,11 @@ class AlunoController:
                 )
             else:
                 if aluno:
-                    self.__aluno = AlunoSchema().load(aluno, session=self.__aluno_dao.session).data
+                    self.__aluno = (
+                        AlunoSchema()
+                        .load(aluno, session=self.__aluno_dao.session)
+                        .data
+                    )
                     self.__aluno_dao = AlunoDAO(self.__aluno)
                     self.__aluno_dao.insert()
                     logger.info(
@@ -67,7 +70,9 @@ class AlunoController:
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except ValidationError as e:
-            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
+            raise UsoInvalido(
+                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
+            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -81,7 +86,11 @@ class AlunoController:
             self.__aluno_dao = AlunoDAO(self.__aluno)
             if self.__aluno:
                 if aluno:
-                    self.__aluno = AlunoSchema().load(aluno, session=self.__aluno_dao.session).data
+                    self.__aluno = (
+                        AlunoSchema()
+                        .load(aluno, session=self.__aluno_dao.session)
+                        .data
+                    )
                     self.__aluno_dao = AlunoDAO(self.__aluno)
                     self.__aluno_dao.update()
                     logger.info("aluno atualizado com sucesso")
@@ -101,7 +110,9 @@ class AlunoController:
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except ValidationError as e:
-            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
+            raise UsoInvalido(
+                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
+            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,

@@ -23,4 +23,7 @@ class CampusSchema(ma.ModelSchema):
         sqla_session = db.session
 
     codigo = fields.Integer(dump_only=True)
-    descricao = fields.String(required=True, error_messages={"required": "`descricao` é um atributo necessário."})
+    descricao = fields.String(
+        required=True,
+        error_messages={"required": "`descricao` é um atributo necessário."},
+    )

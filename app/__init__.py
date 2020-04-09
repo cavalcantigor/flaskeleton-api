@@ -48,7 +48,9 @@ def create_app(test_config=None):
     setup_logger(app)
 
     # modificando prefixo da url
-    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=os.getenv("API_PREFIX") or "/flaskeleton-api")
+    app.wsgi_app = PrefixMiddleware(
+        app.wsgi_app, prefix=os.getenv("API_PREFIX") or "/flaskeleton-api"
+    )
 
     if test_config is None:
         # carrega uma instancia de configuracao
@@ -92,5 +94,7 @@ class PrefixMiddleware(object):
             start_response("404", [("Content-Type", "text/plain")])
             return [
                 "Esta URL nao pertence a aplicacao. "
-                "Por favor, insira o prefixo '{}'.".format(self.prefix).encode()
+                "Por favor, insira o prefixo '{}'.".format(
+                    self.prefix
+                ).encode()
             ]

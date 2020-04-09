@@ -49,7 +49,11 @@ class CampusController:
                 )
             else:
                 if campus:
-                    self.__campus = CampusSchema().load(campus, session=self.__campus_dao.session).data
+                    self.__campus = (
+                        CampusSchema()
+                        .load(campus, session=self.__campus_dao.session)
+                        .data
+                    )
                     self.__campus_dao = CampusDAO(self.__campus)
                     self.__campus_dao.insert()
                     logger.info(
@@ -67,7 +71,9 @@ class CampusController:
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except ValidationError as e:
-            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
+            raise UsoInvalido(
+                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
+            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -81,7 +87,11 @@ class CampusController:
             self.__campus_dao = CampusDAO(self.__campus)
             if self.__campus:
                 if campus:
-                    self.__campus = CampusSchema().load(campus, session=self.__campus_dao.session).data
+                    self.__campus = (
+                        CampusSchema()
+                        .load(campus, session=self.__campus_dao.session)
+                        .data
+                    )
                     self.__campus_dao = CampusDAO(self.__campus)
                     self.__campus_dao.update()
                     logger.info("campus atualizado com sucesso")
@@ -101,7 +111,9 @@ class CampusController:
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except ValidationError as e:
-            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
+            raise UsoInvalido(
+                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
+            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
