@@ -54,10 +54,10 @@ test-file: ## Sobe o container da aplicação e executa um arquivo de teste
 tail-logs: ## Sobe o container da aplicação e acompanha os logs
 	docker-compose logs -f $(container)
 
-coverage:
+coverage: ## Reporta cobertura de teste no console
 	coverage run -m pytest && coverage report
 
-coverage-html:
+coverage-html: ## Reporta cobertura de teste em html
 	coverage html
 
 prettier: ## Formata o codigo para torna-lo mais bonito
