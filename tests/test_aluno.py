@@ -69,9 +69,6 @@ def test_post_aluno_invalido(client):
 
 
 def test_post_aluno_not_json(client):
-    data = {
-        "teste": 123
-    }
     response = client.post('/flaskeleton-api/aluno/', headers=headers)
     assert response.status_code == 400
     assert response.json['erro'] == "ERRO_VALIDACAO"
@@ -98,14 +95,13 @@ def test_put_aluno_not_authorized(client):
     assert response.json['erro'] == 'NAO_AUTORIZADO'
 
 
-def test_put_aluno_not_authorized(client):
+def test_put_aluno_not_authorized_invalid_token(client):
     data = {
         "nome": "Jose Sousa",
         "email": "josesousa@email.com",
         "endereco": "Rua da Felicidade, 20"
     }
-    response = client.put('/flaskeleton-api/aluno/1', json=data,
-    headers={
+    response = client.put('/flaskeleton-api/aluno/1', json=data, headers={
         'Authorization': 456
     })
     assert response.status_code == 401
@@ -126,6 +122,17 @@ def test_put_aluno(client):
 def test_put_aluno_invalido(client):
     data = {
         "teste": 123
+    }
+    response = client.put('/flaskeleton-api/aluno/1', json=data, headers=headers)
+    assert response.status_code == 400
+    assert response.json['erro'] == "ERRO_VALIDACAO"
+
+
+def test_put_aluno_email_invalido(client):
+    data = {
+        "nome": "Jose Sousa",
+        "email": "josesousa.com",
+        "endereco": "Rua da Felicidade, 20"
     }
     response = client.put('/flaskeleton-api/aluno/1', json=data, headers=headers)
     assert response.status_code == 400
@@ -183,4 +190,4 @@ def test_get_list_alunos(client):
     }
     client.post('/flaskeleton-api/aluno/', json=data, headers=headers)
     response = client.get('/flaskeleton-api/aluno/')
-    assert [aluno['codigo'] for aluno in response.json] == [2, 3]
+    assert [aluno['codigo'] for aluno in response.json] == [2, 3, 4]

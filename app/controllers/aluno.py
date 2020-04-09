@@ -2,6 +2,7 @@ from ..errors import UsoInvalido, ErroInterno, TipoErro
 from ..dao.aluno import AlunoDAO
 from ..models.aluno import Aluno, AlunoSchema
 from ..logger import logger
+from marshmallow import ValidationError
 import re
 
 
@@ -50,13 +51,13 @@ class AlunoController:
                 )
             else:
                 if aluno:
-                    self.valida_aluno(aluno)
-                    aluno_dao = AlunoDAO(self.__aluno)
-                    result = aluno_dao.insert()
+                    self.__aluno = AlunoSchema().load(aluno, session=self.__aluno_dao.session).data
+                    self.__aluno_dao = AlunoDAO(self.__aluno)
+                    self.__aluno_dao.insert()
                     logger.info(
                         "aluno {} criado com sucesso".format(str(self.__aluno))
                     )
-                    return AlunoSchema().jsonify(result)
+                    return AlunoSchema().jsonify(self.__aluno)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -65,6 +66,8 @@ class AlunoController:
                     )
         except (UsoInvalido, ErroInterno) as e:
             raise e
+        except ValidationError as e:
+            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -78,10 +81,11 @@ class AlunoController:
             self.__aluno_dao = AlunoDAO(self.__aluno)
             if self.__aluno:
                 if aluno:
-                    self.valida_aluno(aluno)
-                    result = self.__aluno_dao.update()
+                    self.__aluno = AlunoSchema().load(aluno, session=self.__aluno_dao.session).data
+                    self.__aluno_dao = AlunoDAO(self.__aluno)
+                    self.__aluno_dao.update()
                     logger.info("aluno atualizado com sucesso")
-                    return AlunoSchema().jsonify(result)
+                    return AlunoSchema().jsonify(self.__aluno)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -96,6 +100,8 @@ class AlunoController:
                 )
         except (UsoInvalido, ErroInterno) as e:
             raise e
+        except ValidationError as e:
+            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -130,22 +136,3 @@ class AlunoController:
                 ex=e,
                 payload="Ocorreu um erro ao deletar aluno.",
             )
-
-    def valida_aluno(self, aluno: dict) -> Aluno:
-        attrs = ["nome", "email", "endereco"]
-        for k, v in aluno.items():
-            if k not in attrs:
-                raise UsoInvalido(
-                    TipoErro.ERRO_VALIDACAO.name,
-                    payload="Attributo '" + k + "' não é válido.",
-                )
-            setattr(self.__aluno, k, v)
-
-        regex = r"[^@]+@[^@]+\.[^@]+"
-        if self.__aluno.email:
-            if not re.search(regex, self.__aluno.email):
-                raise UsoInvalido(
-                    TipoErro.ERRO_VALIDACAO.name, payload="E-mail inválido."
-                )
-
-        return self.__aluno

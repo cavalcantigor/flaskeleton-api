@@ -2,6 +2,7 @@ from ..errors import ErroInterno, TipoErro, UsoInvalido
 from ..dao.campus import CampusDAO
 from ..models.campus import Campus, CampusSchema
 from ..logger import logger
+from marshmallow import ValidationError
 
 
 class CampusController:
@@ -48,15 +49,15 @@ class CampusController:
                 )
             else:
                 if campus:
-                    self.valida_campus(campus)
-                    campus_dao = CampusDAO(self.__campus)
-                    result = campus_dao.insert()
+                    self.__campus = CampusSchema().load(campus, session=self.__campus_dao.session).data
+                    self.__campus_dao = CampusDAO(self.__campus)
+                    self.__campus_dao.insert()
                     logger.info(
                         "campus {} criado com sucesso".format(
                             str(self.__campus)
                         )
                     )
-                    return CampusSchema().jsonify(result)
+                    return CampusSchema().jsonify(self.__campus)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -65,6 +66,8 @@ class CampusController:
                     )
         except (UsoInvalido, ErroInterno) as e:
             raise e
+        except ValidationError as e:
+            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -78,10 +81,11 @@ class CampusController:
             self.__campus_dao = CampusDAO(self.__campus)
             if self.__campus:
                 if campus:
-                    self.valida_campus(campus)
-                    result = self.__campus_dao.update()
+                    self.__campus = CampusSchema().load(campus, session=self.__campus_dao.session).data
+                    self.__campus_dao = CampusDAO(self.__campus)
+                    self.__campus_dao.update()
                     logger.info("campus atualizado com sucesso")
-                    return CampusSchema().jsonify(result)
+                    return CampusSchema().jsonify(self.__campus)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -96,6 +100,8 @@ class CampusController:
                 )
         except (UsoInvalido, ErroInterno) as e:
             raise e
+        except ValidationError as e:
+            raise UsoInvalido(TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages))
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -127,15 +133,3 @@ class CampusController:
                 ex=e,
                 payload="Ocorreu um erro ao deletar Campus.",
             )
-
-    def valida_campus(self, campus: dict) -> Campus:
-        attrs = ["descricao"]
-        for k, v in campus.items():
-            if k not in attrs:
-                raise UsoInvalido(
-                    TipoErro.ERRO_VALIDACAO.name,
-                    payload="Attributo '" + k + "' não é válido.",
-                )
-            setattr(self.__campus, k, v)
-
-        return self.__campus
