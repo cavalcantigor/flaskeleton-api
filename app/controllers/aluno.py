@@ -125,14 +125,10 @@ class AlunoController:
             self.__aluno = self.__aluno_dao.get()
             self.__aluno_dao = AlunoDAO(self.__aluno)
             if self.__aluno:
-                if self.__aluno_dao.delete():
-                    logger.info(
-                        "aluno {} deletado com sucesso".format(
-                            self.__aluno.codigo
-                        )
-                    )
-                    return True
-                return False
+                self.__aluno_dao.delete()
+                logger.info(
+                    "aluno {} deletado com sucesso".format(self.__aluno.codigo)
+                )
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,
