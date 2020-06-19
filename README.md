@@ -65,6 +65,13 @@ em sua máquina. O *SQLite3* é uma excelente escolha para uma aplicação peque
 como essa, que serve de exemplo para uso do ORM e principais funcionalidades
 do framework *Flask*.
 
+Para que o arquivo `.db` seja criado corretamente localmente, deverão ser setados as seguintes variáveis de ambiente:
+```shell script
+export DATABASE_URI=sqlite:///flaskeleton.db
+export DATABASE_DEV=sqlite:///flaskeleton.db
+```
+A primeira variável é onde o `SQLAlchemy` vai buscar a informação da `URI_BASE`, aquela que vai ser usada para os comandos seguintes logo abaixo. A segunda diz respeito ao `BIND` da base de dados de acordo com o contexto da aplicação. Por padrão, a aplicação entende que deverá rodar em modo de desenvolvimento e buscará por `DATABASE_DEV`. Essas variáveis podem ser livremente alteradas, basta conferir o arquivo `config.py`.
+
 Ao executar pela primeira vez, rode o comando 
 ```shell script
 flask db migrate
@@ -88,7 +95,6 @@ da base de dados no container.
 ```shell script
 make create-db
 ```
-
 
 #### Documentação da API
 
@@ -127,6 +133,3 @@ O Output será um arquivo ```index.html``` dentro de ```./app/templates/apidocs/
 que é servido através do endpoint da aplicação.
 
 *p.s: O arquivo base para esta documentação foi retirado de: [Definindo APIs com o API Blueprint](https://eltonminetto.net/post/2017-06-29-definindo-apis-com-api-blueprint/)*.
-
-### API multicontexto
-...

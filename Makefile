@@ -39,7 +39,7 @@ build: ## Rebuilda os containers
 	docker-compose build
 	$(MAKE) up
 
-create-db:
+create-db: ## Cria o arquivo .db do sqlite dentro do container
 	docker-compose run app flask db migrate && flask db upgrade
 
 down: ## Para e remove os containers
