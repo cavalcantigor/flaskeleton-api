@@ -6,12 +6,10 @@ services:
     restart: on-failure:10
     volumes:
       - .:/application
-    command: "gunicorn  --worker-class gevent --workers=4 --threads 50 --bind=0.0.0.0:5000 --log-level=info app:'create_app()'"
+    command: "gunicorn  --worker-class gevent --workers=4 --threads 2 --bind=0.0.0.0:5000 --log-level=info app:'create_app()'"
     ports:
-      - "${FLASKELETON_PORT_HOST}:${FLASKELETON_PORT_CONTAINER}"
+      - "3000:5000"
     environment:
-      - FLASKELETON_PORT_HOST=5000
-      - FLASKELETON_PORT_CONTAINER=3000
       - DATABASE_URI=sqlite:////application/flaskeleton.db
       - DATABASE_DEV=sqlite:////application/flaskeleton.db
       - DATABASE_PROD=sqlite:////application/production.db
