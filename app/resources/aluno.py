@@ -1,4 +1,4 @@
-from flask import make_response, Blueprint, request
+from flask import make_response, Blueprint, request, jsonify
 from ..controllers.aluno import AlunoController
 from ..errors import ErroInterno, UsoInvalido, TipoErro
 from . import generic_handler, login_required
@@ -40,7 +40,7 @@ def retrieve(codigo: int = None):
     try:
         aluno_controller = AlunoController(codigo=codigo)
 
-        resposta = make_response(aluno_controller.recuperar_aluno(), 200)
+        resposta = make_response(jsonify(aluno_controller.recuperar_aluno()), 200)
         resposta.headers["Content-Type"] = "application/json"
 
         return resposta

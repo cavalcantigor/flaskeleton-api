@@ -1,6 +1,6 @@
 from .db import db, ma
 from sqlalchemy import Column, Integer, String
-from marshmallow import fields, validates, ValidationError
+from marshmallow import fields, validates, ValidationError, post_load
 import re
 
 
@@ -19,11 +19,9 @@ class Aluno(db.Model):
         )
 
 
-class AlunoSchema(ma.ModelSchema):
+class AlunoSchema(ma.SQLAlchemySchema):
     class Meta:
-        strict = True
         model = Aluno
-        sqla_session = db.session
 
     codigo = fields.Integer(dump_only=True)
     nome = fields.String(
@@ -38,6 +36,10 @@ class AlunoSchema(ma.ModelSchema):
         required=True,
         error_messages={"required": "`endereco` é um atributo necessário."},
     )
+
+    @post_load
+    def make_user(self, data, **kwargs):
+        return Aluno(**data)
 
     @validates("email")
     def valida_email(self, email):

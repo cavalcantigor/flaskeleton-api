@@ -14,6 +14,7 @@ class CampusController:
         return CampusController.__instance
 
     def __init__(self, codigo: int = None):
+        self.__campus_schema = CampusSchema()
         self.__campus = Campus(codigo=codigo)
         self.__campus_dao = CampusDAO(self.__campus)
 
@@ -23,9 +24,9 @@ class CampusController:
             if resultado is not None:
                 logger.info("campus recuperado com sucesso")
                 if isinstance(resultado, list):
-                    return CampusSchema().jsonify(resultado, many=True)
+                    return self.__campus_schema.dump(resultado, many=True)
                 else:
-                    return CampusSchema().jsonify(resultado)
+                    return self.__campus_schema.dump(resultado)
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,
@@ -49,11 +50,7 @@ class CampusController:
                 )
             else:
                 if campus:
-                    self.__campus = (
-                        CampusSchema()
-                        .load(campus, session=self.__campus_dao.session)
-                        .data
-                    )
+                    self.__campus = CampusSchema().load(campus, session=self.__campus_dao.session)
                     self.__campus_dao = CampusDAO(self.__campus)
                     self.__campus_dao.insert()
                     logger.info(
@@ -61,7 +58,7 @@ class CampusController:
                             str(self.__campus)
                         )
                     )
-                    return CampusSchema().jsonify(self.__campus)
+                    return self.__campus_schema.dump(self.__campus)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -87,11 +84,7 @@ class CampusController:
             self.__campus_dao = CampusDAO(self.__campus)
             if self.__campus:
                 if campus:
-                    self.__campus = (
-                        CampusSchema()
-                        .load(campus, session=self.__campus_dao.session)
-                        .data
-                    )
+                    self.__campus = CampusSchema().load(campus)
                     self.__campus_dao = CampusDAO(self.__campus)
                     self.__campus_dao.update()
                     logger.info("campus atualizado com sucesso")
@@ -127,7 +120,9 @@ class CampusController:
             self.__campus_dao = CampusDAO(self.__campus)
             if self.__campus:
                 if self.__campus_dao.delete():
-                    logger.info("campus deletado com sucesso")
+                    logger.info(
+                        "campus {} deletado com sucesso".format(self.__campus.codigo)
+                    )
                     return True
                 else:
                     return False

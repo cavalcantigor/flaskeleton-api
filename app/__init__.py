@@ -1,7 +1,7 @@
 import logging
 from flask import Flask, request, g
 from flask_cors import CORS
-from .models.db import db
+from .models.db import db, ma
 from .config import Config, DevelopmentConfig
 from flask_migrate import Migrate
 from .logger import logger
@@ -69,6 +69,7 @@ def create_app(test_config=None):
     app.register_blueprint(bp_docs)
 
     db.init_app(app)
+    ma.init_app(app)
     migrate = Migrate(app, db)  # noqa: F841
     setup_engine(db)
     CORS(app)

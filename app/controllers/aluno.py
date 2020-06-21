@@ -15,6 +15,7 @@ class AlunoController:
         return AlunoController.__instance
 
     def __init__(self, codigo: int = None):
+        self.__aluno_schema = AlunoSchema()
         self.__aluno = Aluno(codigo=codigo)
         self.__aluno_dao = AlunoDAO(self.__aluno)
 
@@ -24,9 +25,9 @@ class AlunoController:
             if resultado is not None:
                 logger.info("aluno(s) recuperado(s) com sucesso")
                 if isinstance(resultado, list):
-                    return AlunoSchema().jsonify(resultado, many=True)
+                    return self.__aluno_schema.dump(resultado, many=True)
                 else:
-                    return AlunoSchema().jsonify(resultado)
+                    return self.__aluno_schema.dump(resultado)
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,
@@ -50,17 +51,13 @@ class AlunoController:
                 )
             else:
                 if aluno:
-                    self.__aluno = (
-                        AlunoSchema()
-                        .load(aluno, session=self.__aluno_dao.session)
-                        .data
-                    )
+                    self.__aluno = self.__aluno_schema.load(aluno)
                     self.__aluno_dao = AlunoDAO(self.__aluno)
                     self.__aluno_dao.insert()
                     logger.info(
                         "aluno {} criado com sucesso".format(str(self.__aluno))
                     )
-                    return AlunoSchema().jsonify(self.__aluno)
+                    return self.__aluno_schema.dump(self.__aluno)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -77,24 +74,19 @@ class AlunoController:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
                 ex=e,
-                payload="Ocorreu um erro ao criar aluno.",
+                payload="Ocorreu um erro ao criar aluno." + str(e),
             )
 
     def atualizar_aluno(self, aluno: dict = None) -> Aluno:
         try:
             self.__aluno = self.__aluno_dao.get()
-            self.__aluno_dao = AlunoDAO(self.__aluno)
             if self.__aluno:
                 if aluno:
-                    self.__aluno = (
-                        AlunoSchema()
-                        .load(aluno, session=self.__aluno_dao.session)
-                        .data
-                    )
+                    self.__aluno = self.__aluno_schema.load(aluno)
                     self.__aluno_dao = AlunoDAO(self.__aluno)
                     self.__aluno_dao.update()
                     logger.info("aluno atualizado com sucesso")
-                    return AlunoSchema().jsonify(self.__aluno)
+                    return self.__aluno_schema.dump(self.__aluno)
                 else:
                     raise UsoInvalido(
                         TipoErro.ERRO_VALIDACAO.name,
@@ -125,10 +117,13 @@ class AlunoController:
             self.__aluno = self.__aluno_dao.get()
             self.__aluno_dao = AlunoDAO(self.__aluno)
             if self.__aluno:
-                self.__aluno_dao.delete()
-                logger.info(
-                    "aluno {} deletado com sucesso".format(self.__aluno.codigo)
-                )
+                if self.__aluno_dao.delete():
+                    logger.info(
+                        "aluno {} deletado com sucesso".format(self.__aluno.codigo)
+                    )
+                    return True
+                else:
+                    return False
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,

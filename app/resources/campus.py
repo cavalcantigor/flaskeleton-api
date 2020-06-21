@@ -1,4 +1,4 @@
-from flask import make_response, Blueprint, request
+from flask import make_response, Blueprint, request, jsonify
 from ..controllers.campus import CampusController
 from ..errors import ErroInterno, UsoInvalido, TipoErro
 from . import generic_handler, login_required
@@ -40,7 +40,7 @@ def retrieve(codigo: int = None):
     try:
         campus_controller = CampusController(codigo=codigo)
 
-        resposta = make_response(campus_controller.recuperar_campus(), 200)
+        resposta = make_response(jsonify(campus_controller.recuperar_campus()), 200)
         resposta.headers["Content-Type"] = "application/json"
 
         return resposta

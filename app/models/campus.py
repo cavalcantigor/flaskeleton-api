@@ -16,11 +16,10 @@ class Campus(db.Model):
         )
 
 
-class CampusSchema(ma.ModelSchema):
+class CampusSchema(ma.SQLAlchemySchema):
     class Meta:
         strict = True
         model = Campus
-        sqla_session = db.session
 
     codigo = fields.Integer(dump_only=True)
     descricao = fields.String(
