@@ -30,9 +30,9 @@ up: ## Sobe os containers no modo detached (-d)
 up-debug: ## Sobe os containers em modo de debug (sem -d)
 	docker-compose up
 
-clean: ## Remove volumes associados ao container
+clean: ## Remove volumes e imagens associadas ao container
 	docker-compose rm -vsf
-	docker-compose down -v --remove-orphans
+	docker-compose down -v --rmi all --remove-orphans
 
 build: ## Rebuilda os containers
 	$(MAKE) clean
