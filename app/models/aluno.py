@@ -1,4 +1,5 @@
-from .db import db, ma
+from .db import db
+from . import ManagedSchema
 from sqlalchemy import Column, Integer, String
 from marshmallow import fields, validates, ValidationError, post_load
 import re
@@ -19,11 +20,11 @@ class Aluno(db.Model):
         )
 
 
-class AlunoSchema(ma.SQLAlchemySchema):
+class AlunoSchema(ManagedSchema):
     class Meta:
         model = Aluno
 
-    codigo = fields.Integer(dump_only=True)
+    codigo = fields.Integer()
     nome = fields.String(
         required=True,
         error_messages={"required": "`nome` é um atributo necessário."},

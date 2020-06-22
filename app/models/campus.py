@@ -1,4 +1,5 @@
-from .db import db, ma
+from .db import db
+from . import ManagedSchema
 from sqlalchemy import Column, Integer, String
 from marshmallow import fields
 
@@ -16,7 +17,7 @@ class Campus(db.Model):
         )
 
 
-class CampusSchema(ma.SQLAlchemySchema):
+class CampusSchema(ManagedSchema):
     class Meta:
         strict = True
         model = Campus
