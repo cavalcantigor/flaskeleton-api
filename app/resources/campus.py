@@ -56,10 +56,11 @@ def retrieve(codigo: int = None):
 
 @bp.route("/<int:codigo>", methods=["PUT"])
 @login_required
-def update(codigo: int = None):
+def update(codigo: int):
     try:
         campus_controller = CampusController(codigo=codigo)
         if request.is_json:
+            request.json["codigo"] = codigo
             resposta = make_response(
                 campus_controller.atualizar_campus(request.json), 200
             )
@@ -83,7 +84,7 @@ def update(codigo: int = None):
 
 @bp.route("/<int:codigo>", methods=["DELETE"])
 @login_required
-def delete(codigo: int = None):
+def delete(codigo: int):
     try:
         campus_controller = CampusController(codigo=codigo)
         campus_controller.deletar_campus()

@@ -12,12 +12,12 @@ class AlunoController:
         self.__aluno = Aluno(codigo=codigo)
         self.__aluno_dao = AlunoDAO(self.__aluno)
 
-    def recuperar_aluno(self, codigo: int = None) -> list or Aluno:
+    def recuperar_aluno(self) -> list or Aluno:
         try:
-            if codigo:
+            if self.__aluno.codigo:
                 self.__aluno = self.__aluno_dao.get()
                 if self.__aluno:
-                    logger.info("aluno {} recuperado(s) com sucesso".format(codigo))
+                    logger.info("aluno {} recuperado(s) com sucesso".format(self.__aluno.codigo))
                     return self.__aluno_schema.dump(self.__aluno)
                 else:
                     raise UsoInvalido(
@@ -39,9 +39,10 @@ class AlunoController:
     def criar_aluno(self, aluno: dict = None) -> Aluno:
         try:
             self.__aluno = self.__aluno_schema.load(aluno, instance=self.__aluno)
-            self.__aluno_dao = AlunoDAO(self.__aluno).insert()
+            self.__aluno_dao = AlunoDAO(self.__aluno)
+            self.__aluno_dao.insert()
             logger.info(
-                "aluno {} criado com sucesso".format(str(aluno))
+                "aluno {} criado com sucesso".format(str(self.__aluno))
             )
             return self.__aluno_schema.dump(self.__aluno)
         except (UsoInvalido, ErroInterno) as e:
@@ -67,8 +68,8 @@ class AlunoController:
                         TipoErro.ERRO_VALIDACAO.name, payload=str(erros)
                     )
                 self.__aluno_schema.update(self.__aluno, dados_aluno)
-                self.__aluno_dao.update()
-                logger.info("aluno atualizado com sucesso")
+                self.__aluno = self.__aluno_dao.update()
+                logger.info("aluno {} atualizado com sucesso".format(self.__aluno.codigo))
                 return self.__aluno_schema.dump(self.__aluno)
             else:
                 raise UsoInvalido(

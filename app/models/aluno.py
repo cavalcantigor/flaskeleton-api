@@ -15,8 +15,8 @@ class Aluno(db.Model):
     endereco = Column(String, name="ENDERECO")
 
     def __repr__(self):
-        return "<Aluno codigo={codigo}, nome={nome}, email={email}>".format(
-            codigo=self.codigo, nome=self.nome, email=self.email
+        return "<Aluno nome={nome}, email={email}>".format(
+            nome=self.nome, email=self.email
         )
 
 

@@ -1,7 +1,7 @@
 from .db import db
 from . import ManagedSchema
 from sqlalchemy import Column, Integer, String
-from marshmallow import fields
+from marshmallow import fields, post_load
 
 
 class Campus(db.Model):
@@ -12,18 +12,21 @@ class Campus(db.Model):
     descricao = Column(String, name="DESCRICAO")
 
     def __repr__(self):
-        return "<Campus codigo={codigo}, descricao={descricao}>".format(
-            codigo=self.codigo, descricao=self.descricao
+        return "<Campus descricao={descricao}>".format(
+            descricao=self.descricao
         )
 
 
 class CampusSchema(ManagedSchema):
     class Meta:
-        strict = True
         model = Campus
 
-    codigo = fields.Integer(dump_only=True)
+    codigo = fields.Integer()
     descricao = fields.String(
         required=True,
         error_messages={"required": "`descricao` é um atributo necessário."},
     )
+
+    @post_load
+    def make_user(self, data, **kwargs):
+        return Campus(**data)
