@@ -38,9 +38,9 @@ def create():
 @bp.route("/", methods=["GET"])
 def retrieve(codigo: int = None):
     try:
-        aluno_controller = AlunoController(codigo=codigo)
+        aluno_controller = AlunoController(codigo)
 
-        resposta = make_response(jsonify(aluno_controller.recuperar_aluno()), 200)
+        resposta = make_response(jsonify(aluno_controller.recuperar_aluno(codigo)), 200)
         resposta.headers["Content-Type"] = "application/json"
 
         return resposta
@@ -56,10 +56,11 @@ def retrieve(codigo: int = None):
 
 @bp.route("/<int:codigo>", methods=["PUT"])
 @login_required
-def update(codigo: int = None):
+def update(codigo: int):
     try:
-        aluno_controller = AlunoController(codigo=codigo)
+        aluno_controller = AlunoController(codigo)
         if request.is_json:
+            request.json["codigo"] = codigo
             aluno = aluno_controller.atualizar_aluno(request.json)
 
             resposta = make_response(aluno, 200)
@@ -83,9 +84,9 @@ def update(codigo: int = None):
 
 @bp.route("/<int:codigo>", methods=["DELETE"])
 @login_required
-def delete(codigo: int = None):
+def delete(codigo: int):
     try:
-        aluno_controller = AlunoController(codigo=codigo)
+        aluno_controller = AlunoController(codigo)
         aluno_controller.deletar_aluno()
 
         return "", 204

@@ -6,12 +6,6 @@ from marshmallow import ValidationError
 
 
 class CampusController:
-    __instance = None
-
-    def __new__(cls, codigo: int = None):
-        if CampusController.__instance is None:
-            CampusController.__instance = object.__new__(cls)
-        return CampusController.__instance
 
     def __init__(self, codigo: int = None):
         self.__campus_schema = CampusSchema()

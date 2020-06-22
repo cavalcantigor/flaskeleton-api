@@ -7,33 +7,26 @@ from marshmallow import ValidationError
 
 class AlunoController:
 
-    __instance = None
-
-    def __new__(cls, codigo: int = None):
-        if AlunoController.__instance is None:
-            AlunoController.__instance = object.__new__(cls)
-        return AlunoController.__instance
-
     def __init__(self, codigo: int = None):
         self.__aluno_schema = AlunoSchema()
         self.__aluno = Aluno(codigo=codigo)
         self.__aluno_dao = AlunoDAO(self.__aluno)
 
-    def recuperar_aluno(self) -> list or Aluno:
+    def recuperar_aluno(self, codigo: int = None) -> list or Aluno:
         try:
-            resultado = self.__aluno_dao.get()
-            if resultado is not None:
-                logger.info("aluno(s) recuperado(s) com sucesso")
-                if isinstance(resultado, list):
-                    return self.__aluno_schema.dump(resultado, many=True)
+            if codigo:
+                self.__aluno = self.__aluno_dao.get()
+                if self.__aluno:
+                    logger.info("aluno {} recuperado(s) com sucesso".format(codigo))
+                    return self.__aluno_schema.dump(self.__aluno)
                 else:
-                    return self.__aluno_schema.dump(resultado)
+                    raise UsoInvalido(
+                        TipoErro.NAO_ENCONTRADO.name,
+                        payload="Aluno não foi encontrado.",
+                        status_code=404,
+                    )
             else:
-                raise UsoInvalido(
-                    TipoErro.NAO_ENCONTRADO.name,
-                    payload="Aluno não foi encontrado.",
-                    status_code=404,
-                )
+                return self.__aluno_schema.dump(self.__aluno_dao.get_all(), many=True)
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except Exception as e:
@@ -45,25 +38,12 @@ class AlunoController:
 
     def criar_aluno(self, aluno: dict = None) -> Aluno:
         try:
-            if self.__aluno.codigo:
-                raise UsoInvalido(
-                    TipoErro.ALUNO_DUPLICADO.name, ex="Aluno já existe."
-                )
-            else:
-                if aluno:
-                    self.__aluno = self.__aluno_schema.load(aluno)
-                    self.__aluno_dao = AlunoDAO(self.__aluno)
-                    self.__aluno_dao.insert()
-                    logger.info(
-                        "aluno {} criado com sucesso".format(str(self.__aluno))
-                    )
-                    return self.__aluno_schema.dump(self.__aluno)
-                else:
-                    raise UsoInvalido(
-                        TipoErro.ERRO_VALIDACAO.name,
-                        ex="Objeto aluno a ser inserido está nulo ou "
-                        "vazio.",
-                    )
+            self.__aluno = self.__aluno_schema.load(aluno, instance=self.__aluno)
+            self.__aluno_dao = AlunoDAO(self.__aluno).insert()
+            logger.info(
+                "aluno {} criado com sucesso".format(str(aluno))
+            )
+            return self.__aluno_schema.dump(self.__aluno)
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except ValidationError as e:
@@ -77,22 +57,19 @@ class AlunoController:
                 payload="Ocorreu um erro ao criar aluno." + str(e),
             )
 
-    def atualizar_aluno(self, aluno: dict = None) -> Aluno:
+    def atualizar_aluno(self, dados_aluno: dict = None) -> Aluno:
         try:
             self.__aluno = self.__aluno_dao.get()
             if self.__aluno:
-                if aluno:
-                    self.__aluno = self.__aluno_schema.load(aluno)
-                    self.__aluno_dao = AlunoDAO(self.__aluno)
-                    self.__aluno_dao.update()
-                    logger.info("aluno atualizado com sucesso")
-                    return self.__aluno_schema.dump(self.__aluno)
-                else:
+                erros = self.__aluno_schema.validate(dados_aluno)
+                if erros:
                     raise UsoInvalido(
-                        TipoErro.ERRO_VALIDACAO.name,
-                        payload="Objeto aluno a ser atualizado está nulo "
-                        "ou vazio.",
+                        TipoErro.ERRO_VALIDACAO.name, payload=str(erros)
                     )
+                self.__aluno_schema.update(self.__aluno, dados_aluno)
+                self.__aluno_dao.update()
+                logger.info("aluno atualizado com sucesso")
+                return self.__aluno_schema.dump(self.__aluno)
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,
@@ -114,9 +91,7 @@ class AlunoController:
 
     def deletar_aluno(self) -> bool:
         try:
-            self.__aluno = self.__aluno_dao.get()
-            self.__aluno_dao = AlunoDAO(self.__aluno)
-            if self.__aluno:
+            if self.__aluno_dao.get():
                 if self.__aluno_dao.delete():
                     logger.info(
                         "aluno {} deletado com sucesso".format(self.__aluno.codigo)
