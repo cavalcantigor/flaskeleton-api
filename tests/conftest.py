@@ -13,6 +13,9 @@ def app():
             "TESTING": True,
             "DEBUG": False,
             "SQLALCHEMY_DATABASE_URI": "sqlite:///",
+            "SQLALCHEMY_BINDS": {
+                "development": "sqlite:///"
+            },
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         })
 

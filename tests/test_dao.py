@@ -1,14 +1,7 @@
 from app.dao import DAO
 from app.models.aluno import Aluno
-from app.models.campus import Campus
 from unittest.mock import patch
 import pytest
-
-
-def test_singleton_dao():
-    dao_1 = DAO(Aluno())
-    dao_2 = DAO(Campus())
-    assert id(dao_1) == id(dao_2)
 
 
 def test_get():

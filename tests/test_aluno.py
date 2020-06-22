@@ -1,6 +1,5 @@
 from unittest.mock import patch
 from app.errors import TipoErro, ErroInterno
-from app.models.aluno import Aluno
 
 
 headers = {
@@ -253,7 +252,7 @@ def test_get_list_alunos(client):
     }
     client.post('/flaskeleton-api/aluno/', json=data, headers=headers)
     response = client.get('/flaskeleton-api/aluno/')
-    assert [aluno['codigo'] for aluno in response.json] == [2, 3, 4]
+    assert [aluno['codigo'] for aluno in response.json] == [2, 3]
 
 
 def test_delete_aluno_exception(client):
