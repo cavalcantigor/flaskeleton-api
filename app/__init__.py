@@ -13,19 +13,10 @@ __email__ = "nti@ceuma.br"
 __version__ = "v0.0.1"
 
 
-binds = {}
-
-
 def setup_logger(app):
     gunicorn_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
-
-
-def setup_engine(database):
-    for k, v in Config.APP_BINDS.items():
-        if v:
-            binds[k] = database.create_engine(v)
 
 
 def log_request():
@@ -33,11 +24,7 @@ def log_request():
 
 
 def get_tenant():
-    if "Context" in request.headers:
-        g.context = request.headers["Context"]
-        g.tenant = binds[g.context]
-    else:
-        g.tenant = None
+    db.choose_tenant(request.headers.get("Context", "development"))
 
 
 def create_app(test_config=None):
@@ -71,7 +58,6 @@ def create_app(test_config=None):
     db.init_app(app)
     ma.init_app(app)
     migrate = Migrate(app, db)  # noqa: F841
-    setup_engine(db)
     CORS(app)
 
     app.before_request(log_request)
