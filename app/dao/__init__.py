@@ -2,7 +2,6 @@ from ..models.db import db
 
 
 class DAO:
-
     def __init__(self, obj: object):
         self.obj = obj
         self.session = db.session

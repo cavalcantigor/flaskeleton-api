@@ -6,7 +6,6 @@ from marshmallow import ValidationError
 
 
 class CampusController:
-
     def __init__(self, codigo: int = None):
         self.__campus_schema = CampusSchema()
         self.__campus = Campus(codigo=codigo)
@@ -17,7 +16,11 @@ class CampusController:
             if self.__campus.codigo:
                 self.__campus = self.__campus_dao.get()
                 if self.__campus:
-                    logger.info("campus {} recuperado(s) com sucesso".format(self.__campus.codigo))
+                    logger.info(
+                        "campus {} recuperado(s) com sucesso".format(
+                            self.__campus.codigo
+                        )
+                    )
                     return self.__campus_schema.dump(self.__campus)
                 else:
                     raise UsoInvalido(
@@ -26,7 +29,9 @@ class CampusController:
                         status_code=404,
                     )
             else:
-                return self.__campus_schema.dump(self.__campus_dao.get_all(), many=True)
+                return self.__campus_schema.dump(
+                    self.__campus_dao.get_all(), many=True
+                )
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except Exception as e:
@@ -38,7 +43,9 @@ class CampusController:
 
     def criar_campus(self, campus: dict = None) -> Campus:
         try:
-            self.__campus = self.__campus_schema.load(campus, instance=self.__campus)
+            self.__campus = self.__campus_schema.load(
+                campus, instance=self.__campus
+            )
             self.__campus_dao = CampusDAO(self.__campus)
             self.__campus_dao.insert()
             logger.info(
@@ -69,7 +76,11 @@ class CampusController:
                     )
                 self.__campus_schema.update(self.__campus, dados_campus)
                 self.__campus = self.__campus_dao.update()
-                logger.info("campus {} atualizado com sucesso".format(self.__campus.codigo))
+                logger.info(
+                    "campus {} atualizado com sucesso".format(
+                        self.__campus.codigo
+                    )
+                )
                 return self.__campus_schema.dump(self.__campus)
             else:
                 raise UsoInvalido(
@@ -91,7 +102,9 @@ class CampusController:
             if self.__campus_dao.get():
                 self.__campus_dao.delete()
                 logger.info(
-                    "campus {} deletado com sucesso".format(self.__campus.codigo)
+                    "campus {} deletado com sucesso".format(
+                        self.__campus.codigo
+                    )
                 )
                 return True
             else:

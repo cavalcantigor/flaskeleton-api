@@ -3,7 +3,6 @@ from . import DAO
 
 
 class AlunoDAO(DAO):
-
     def __init__(self, aluno: Aluno = None):
         super().__init__(aluno)
 
@@ -12,8 +11,6 @@ class AlunoDAO(DAO):
 
     def get(self) -> list or Aluno:
         self.obj = (
-            self.session.query(Aluno)
-            .filter_by(codigo=self.obj.codigo)
-            .first()
+            self.session.query(Aluno).filter_by(codigo=self.obj.codigo).first()
         )
         return self.obj

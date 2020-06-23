@@ -6,7 +6,6 @@ from marshmallow import ValidationError
 
 
 class AlunoController:
-
     def __init__(self, codigo: int = None):
         self.__aluno_schema = AlunoSchema()
         self.__aluno = Aluno(codigo=codigo)
@@ -17,7 +16,11 @@ class AlunoController:
             if self.__aluno.codigo:
                 self.__aluno = self.__aluno_dao.get()
                 if self.__aluno:
-                    logger.info("aluno {} recuperado(s) com sucesso".format(self.__aluno.codigo))
+                    logger.info(
+                        "aluno {} recuperado(s) com sucesso".format(
+                            self.__aluno.codigo
+                        )
+                    )
                     return self.__aluno_schema.dump(self.__aluno)
                 else:
                     raise UsoInvalido(
@@ -26,7 +29,9 @@ class AlunoController:
                         status_code=404,
                     )
             else:
-                return self.__aluno_schema.dump(self.__aluno_dao.get_all(), many=True)
+                return self.__aluno_schema.dump(
+                    self.__aluno_dao.get_all(), many=True
+                )
         except (UsoInvalido, ErroInterno) as e:
             raise e
         except Exception as e:
@@ -38,7 +43,9 @@ class AlunoController:
 
     def criar_aluno(self, aluno: dict = None) -> Aluno:
         try:
-            self.__aluno = self.__aluno_schema.load(aluno, instance=self.__aluno)
+            self.__aluno = self.__aluno_schema.load(
+                aluno, instance=self.__aluno
+            )
             self.__aluno_dao = AlunoDAO(self.__aluno)
             self.__aluno_dao.insert()
             logger.info(
@@ -69,7 +76,11 @@ class AlunoController:
                     )
                 self.__aluno_schema.update(self.__aluno, dados_aluno)
                 self.__aluno = self.__aluno_dao.update()
-                logger.info("aluno {} atualizado com sucesso".format(self.__aluno.codigo))
+                logger.info(
+                    "aluno {} atualizado com sucesso".format(
+                        self.__aluno.codigo
+                    )
+                )
                 return self.__aluno_schema.dump(self.__aluno)
             else:
                 raise UsoInvalido(

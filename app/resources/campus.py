@@ -40,7 +40,9 @@ def retrieve(codigo: int = None):
     try:
         campus_controller = CampusController(codigo=codigo)
 
-        resposta = make_response(jsonify(campus_controller.recuperar_campus()), 200)
+        resposta = make_response(
+            jsonify(campus_controller.recuperar_campus()), 200
+        )
         resposta.headers["Content-Type"] = "application/json"
 
         return resposta

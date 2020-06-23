@@ -40,7 +40,9 @@ def retrieve(codigo: int = None):
     try:
         aluno_controller = AlunoController(codigo)
 
-        resposta = make_response(jsonify(aluno_controller.recuperar_aluno()), 200)
+        resposta = make_response(
+            jsonify(aluno_controller.recuperar_aluno()), 200
+        )
         resposta.headers["Content-Type"] = "application/json"
 
         return resposta

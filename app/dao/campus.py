@@ -3,7 +3,6 @@ from . import DAO
 
 
 class CampusDAO(DAO):
-
     def __init__(self, campus: Campus = None):
         super().__init__(campus)
 
