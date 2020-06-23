@@ -1,4 +1,5 @@
 from unittest.mock import patch
+from app.errors import TipoErro, ErroInterno
 
 
 headers = {
@@ -28,6 +29,21 @@ def test_get_campus_not_found(client):
 def test_get_campus_throw_error(client):
     with patch('app.controllers.campus.CampusController.recuperar_campus', side_effect=Exception('Fake exception')):
         response = client.get('/flaskeleton-api/campus/1')
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_get_campus_exception(client):
+    with patch('app.controllers.campus.CampusDAO.get', side_effect=Exception('Fake exception')):
+        response = client.get('/flaskeleton-api/campus/1', headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_get_campus_erro_interno_exception(client):
+    with patch('app.controllers.campus.CampusDAO.get',
+               side_effect=ErroInterno(TipoErro.ERRO_INTERNO.name, payload="")):
+        response = client.get('/flaskeleton-api/campus/1', headers=headers)
         assert response.status_code == 500
         assert response.json['erro'] == "ERRO_INTERNO"
 
@@ -65,7 +81,29 @@ def test_post_campus_not_json(client):
 def test_post_campus_throw_error(client):
     with patch('app.controllers.campus.CampusController.criar_campus', side_effect=Exception('Fake exception')):
         response = client.post('/flaskeleton-api/campus/', json={
-        "descricao": "Campus 1" }, headers=headers)
+            "descricao": "Campus 1"
+        }, headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_post_campus_exception(client):
+    with patch('app.controllers.campus.CampusDAO.insert', side_effect=Exception('Fake exception')):
+        data = {
+            "descricao": "Campus 1"
+        }
+        response = client.post('/flaskeleton-api/campus/', json=data, headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_post_campus_erro_interno_exception(client):
+    with patch('app.controllers.campus.CampusDAO.insert',
+               side_effect=ErroInterno(TipoErro.ERRO_INTERNO.name, payload="")):
+        data = {
+            "descricao": "Campus 1"
+        }
+        response = client.post('/flaskeleton-api/campus/', json=data, headers=headers)
         assert response.status_code == 500
         assert response.json['erro'] == "ERRO_INTERNO"
 
@@ -94,6 +132,14 @@ def test_put_campus(client):
     assert response.json['descricao'] == "Campus 1"
 
 
+def test_put_campus_invalido(client):
+    response = client.put('/flaskeleton-api/campus/1', json={
+        "teste": "Campus 1"
+    }, headers=headers)
+    assert response.status_code == 400
+    assert response.json['erro'] == "ERRO_VALIDACAO"
+
+
 def test_put_campus_not_json(client):
     response = client.put('/flaskeleton-api/campus/1', headers=headers)
     assert response.status_code == 400
@@ -103,7 +149,29 @@ def test_put_campus_not_json(client):
 def test_put_campus_throw_error(client):
     with patch('app.controllers.campus.CampusController.atualizar_campus', side_effect=Exception('Fake exception')):
         response = client.put('/flaskeleton-api/campus/1', json={
-        "descricao": "Campus 1" }, headers=headers)
+            "descricao": "Campus 1"
+        }, headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_put_campus_exception(client):
+    with patch('app.controllers.campus.CampusDAO.update', side_effect=Exception('Fake exception')):
+        data = {
+            "descricao": "Campus 1"
+        }
+        response = client.put('/flaskeleton-api/campus/1', json=data, headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_put_campus_erro_interno_exception(client):
+    with patch('app.controllers.campus.CampusDAO.update',
+               side_effect=ErroInterno(TipoErro.ERRO_INTERNO.name, payload="")):
+        data = {
+            "descricao": "Campus 1"
+        }
+        response = client.put('/flaskeleton-api/campus/1', json=data, headers=headers)
         assert response.status_code == 500
         assert response.json['erro'] == "ERRO_INTERNO"
 
@@ -128,6 +196,20 @@ def test_delete_campus(client):
 
 def test_delete_campus_throw_error(client):
     with patch('app.controllers.campus.CampusController.deletar_campus', side_effect=Exception('Fake exception')):
+        response = client.delete('/flaskeleton-api/campus/1', headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_delete_campus_exception(client):
+    with patch('app.controllers.campus.CampusDAO.get', side_effect=Exception('Fake exception')):
+        response = client.delete('/flaskeleton-api/campus/1', headers=headers)
+        assert response.status_code == 500
+        assert response.json['erro'] == "ERRO_INTERNO"
+
+
+def test_delete_campus_erro_interno_exception(client):
+    with patch('app.controllers.campus.CampusDAO.get', side_effect=ErroInterno(TipoErro.ERRO_INTERNO.name, payload="")):
         response = client.delete('/flaskeleton-api/campus/1', headers=headers)
         assert response.status_code == 500
         assert response.json['erro'] == "ERRO_INTERNO"

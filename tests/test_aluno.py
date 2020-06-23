@@ -168,6 +168,17 @@ def test_put_aluno_invalido(client):
     assert response.json['erro'] == "ERRO_VALIDACAO"
 
 
+def test_put_aluno_not_found(client):
+    data = {
+        "nome": "Darth Vader",
+        "email": "darth@dark.com",
+        "endereco": "Tatooine, 200"
+    }
+    response = client.put('/flaskeleton-api/aluno/100', json=data, headers=headers)
+    assert response.status_code == 404
+    assert response.json['erro'] == "NAO_ENCONTRADO"
+
+
 def test_put_aluno_email_invalido(client):
     data = {
         "nome": "Jose Sousa",

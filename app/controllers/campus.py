@@ -79,10 +79,6 @@ class CampusController:
                 )
         except (UsoInvalido, ErroInterno) as e:
             raise e
-        except ValidationError as e:
-            raise UsoInvalido(
-                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
-            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -93,13 +89,11 @@ class CampusController:
     def deletar_campus(self) -> bool:
         try:
             if self.__campus_dao.get():
-                if self.__campus_dao.delete():
-                    logger.info(
-                        "campus {} deletado com sucesso".format(self.__campus.codigo)
-                    )
-                    return True
-                else:
-                    return False
+                self.__campus_dao.delete()
+                logger.info(
+                    "campus {} deletado com sucesso".format(self.__campus.codigo)
+                )
+                return True
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,

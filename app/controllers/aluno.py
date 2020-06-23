@@ -79,10 +79,6 @@ class AlunoController:
                 )
         except (UsoInvalido, ErroInterno) as e:
             raise e
-        except ValidationError as e:
-            raise UsoInvalido(
-                TipoErro.ERRO_VALIDACAO.name, payload=str(e.messages)
-            )
         except Exception as e:
             raise ErroInterno(
                 TipoErro.ERRO_INTERNO.name,
@@ -93,13 +89,11 @@ class AlunoController:
     def deletar_aluno(self) -> bool:
         try:
             if self.__aluno_dao.get():
-                if self.__aluno_dao.delete():
-                    logger.info(
-                        "aluno {} deletado com sucesso".format(self.__aluno.codigo)
-                    )
-                    return True
-                else:
-                    return False
+                self.__aluno_dao.delete()
+                logger.info(
+                    "aluno {} deletado com sucesso".format(self.__aluno.codigo)
+                )
+                return True
             else:
                 raise UsoInvalido(
                     TipoErro.NAO_ENCONTRADO.name,

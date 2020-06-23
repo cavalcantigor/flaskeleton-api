@@ -8,10 +8,7 @@ class AlunoDAO(DAO):
         super().__init__(aluno)
 
     def get_all(self) -> list:
-        try:
-            return self.session.query(Aluno).all()
-        except Exception as e:
-            raise e
+        return self.session.query(Aluno).all()
 
     def get(self) -> list or Aluno:
         self.obj = (
