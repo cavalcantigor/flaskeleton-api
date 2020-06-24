@@ -2,7 +2,9 @@
 [![codecov](https://codecov.io/gh/cavalcantigor/flaskeleton-api/branch/master/graph/badge.svg)](https://codecov.io/gh/cavalcantigor/flaskeleton-api)
 ## Flaskeleton API
 > Uma aplicação minimalista e completamente funcional contemplando todas as características de uma API
-> completa utilizando *Flask*, *SQLAlchemy*, *Flask-Migrate*, *Marshmallow* e *APIBlueprint*.
+> completa utilizando *Flask*, *SQLAlchemy*, *Flask-Migrate*, *Marshmallow* e *APIBlueprint*. Pode
+> ser facilmente configurada e ajustada conforme necessidades,
+> muito útil em cenários de PoC's (proof of concept).
 
 #### Setup inicial
 Recomendamos utilizar um ambiente virtual `python` para execução
@@ -51,6 +53,32 @@ Além dos pacotes principais, pacotes como `docs` e `templates` são
 auxiliares e utilizados pela *API Blueprint*, além do pacote `migrations`
 utilizado pela extensão *Flask-Migrate*.
 
+#### Configurações
+Esse projeto utiliza o [dynaconf](https://github.com/rochacbruno/dynaconf/)
+para gerenciar suas configurações. Um arquivo [settings](/config/settings.toml)
+na pasta `config` contém as configurações que devem ser 
+carregadas de acordo com o ambiente que a aplicação está
+rodando, conforme recomenda as recomendações do 
+[12 factor](https://12factor.net/).
+
+Uma variável de ambiente `ENV_FOR_DYNACONF` contém
+a configuração a ser carregada. Por exemplo, para os 
+testes, deve ser executado da seguinte maneira
+```shell script
+ENV_FOR_DYNACONF=testing pytest -rpf
+```
+
+A única peculiaridade das configurações é o fato de
+estar utilizando a extensão `dynaconf` para `Flask` 
+([flask-extension](https://dynaconf.readthedocs.io/en/2.2.3/guides/flask.html)),
+que injeta configurações de ambiente nas configurações
+da aplicação que podem ser acessadas via `app.config`.
+Além de facilitar o desenvolvimento, facilita a injeção
+de configurações utilizando uma única lib.
+
+Fique à vontade para livremente excluir, alterar e 
+incluir configurações.
+
 #### Flask-Migrate
 A aplicação é completamente funcional e autocontida, ou seja, funciona
 sem dependências externas. Para auxiliar nesse processo foi utilizado
@@ -63,14 +91,9 @@ A base de dados, nessa aplicação, é mantida utilizando o [*SQLite3*](https://
 antes de executar a aplicação, certifique-se de que está rodando corretamente
 em sua máquina. O *SQLite3* é uma excelente escolha para uma aplicação pequena,
 como essa, que serve de exemplo para uso do ORM e principais funcionalidades
-do framework *Flask*.
-
-Para que o arquivo `.db` seja criado corretamente localmente, deverão ser setados as seguintes variáveis de ambiente:
-```shell script
-export DATABASE_URI=sqlite:///flaskeleton.db
-export DATABASE_DEV=sqlite:///flaskeleton.db
-```
-A primeira variável é onde o `SQLAlchemy` vai buscar a informação da `URI_BASE`, aquela que vai ser usada para os comandos seguintes logo abaixo. A segunda diz respeito ao `BIND` da base de dados de acordo com o contexto da aplicação. Por padrão, a aplicação entende que deverá rodar em modo de desenvolvimento e buscará por `DATABASE_DEV`. Essas variáveis podem ser livremente alteradas, basta conferir o arquivo `config.py`.
+do framework *Flask*. Isso pode ser alterado no arquivo
+de configurações, bastando alterar a string de conexão
+para o banco de sua escolha.
 
 Ao executar pela primeira vez, rode o comando 
 ```shell script
