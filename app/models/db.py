@@ -1,4 +1,4 @@
-from flask import g, current_app
+from flask import g
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 

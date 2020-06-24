@@ -3,7 +3,7 @@ container:
 
 check_task:
   install_script: pip install --upgrade pip && pip install -r requirements.txt
-  test_script: pytest -rpf
+  test_script: ENV_FOR_DYNACONF=testing pytest -rpf
   lint_script: flake8 ./app
-  coverage_script: py.test --cov-report=xml --cov=app tests/
+  coverage_script: ENV_FOR_DYNACONF=testing py.test --cov-report=xml --cov=app tests/
   codecov_script: bash <(curl -s https://codecov.io/bash) -t 0660129b-fb9f-427c-a587-1fa37508c42c
