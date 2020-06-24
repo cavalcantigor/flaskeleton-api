@@ -11,12 +11,11 @@ class MultiTenantSQLAlchemy(SQLAlchemy):
 
     @staticmethod
     def choose_tenant(bind_key):
-        if not current_app.testing:
-            if hasattr(g, "tenant"):
-                raise RuntimeError(
-                    "Switching tenant in the middle of the request."
-                )
-            g.tenant = bind_key
+        if hasattr(g, "tenant"):
+            raise RuntimeError(
+                "Switching tenant in the middle of the request."
+            )
+        g.tenant = bind_key
 
     def get_engine(self, app=None, bind=None):
         if hasattr(g, "tenant"):

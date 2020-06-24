@@ -9,27 +9,19 @@ from app.models.campus import Campus
 @pytest.fixture(scope="session")
 def app():
     try:
-        app = create_app({
-            "TESTING": True,
-            "DEBUG": False,
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///",
-            "SQLALCHEMY_BINDS": {
-                "development": "sqlite:///"
-            },
-            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-        })
+        app = create_app()
 
-        ctx = app.app_context()
-        ctx.push()
-
-        db.create_all()
-        db.session.add(Aluno(nome="Joao da Silva", email="joaosilva@email.com"))
-        db.session.add(Campus(descricao="Campus Teste"))
-        db.session.commit()
+        with app.app_context():
+            db.create_all()
+            db.session.add(Aluno(nome="Joao da Silva", email="joaosilva@email.com"))
+            db.session.add(Campus(descricao="Campus Teste"))
+            db.session.commit()
 
         yield app
 
-        db.drop_all()
+        with app.app_context():
+            db.drop_all()
+
     except Exception as e:
         print(e)
         raise e

@@ -1,16 +1,16 @@
 import logging
-from flask import Flask, request, g
+from dynaconf import settings, FlaskDynaconf
+from flask import Flask, request
 from flask_cors import CORS
 from .models.db import db, ma
-from .config import Config, DevelopmentConfig
 from flask_migrate import Migrate
 from .logger import logger
 import os
 
 
-__author__ = "NTI CEUMA"
-__email__ = "nti@ceuma.br"
-__version__ = "v0.0.1"
+__author__ = "Igor Cavalcanti"
+__email__ = "cavalcantigor at gmail dot com"
+__version__ = "v0.1.0"
 
 
 def setup_logger(app):
@@ -19,15 +19,12 @@ def setup_logger(app):
     app.logger.setLevel(gunicorn_logger.level)
 
 
-def log_request():
-    logger.request()
-
-
 def get_tenant():
-    db.choose_tenant(request.headers.get("Context", "development"))
+    if settings.ENABLE_MULTI_TENANT:
+        db.choose_tenant(request.headers.get("Context", settings.DEFAULT_TENANT))
 
 
-def create_app(test_config=None):
+def create_app():
 
     # cria e configura a aplicacao
     app = Flask(__name__, instance_relative_config=True)
@@ -36,15 +33,10 @@ def create_app(test_config=None):
 
     # modificando prefixo da url
     app.wsgi_app = PrefixMiddleware(
-        app.wsgi_app, prefix=os.getenv("API_PREFIX") or "/flaskeleton-api"
+        app.wsgi_app, prefix=settings.API_PREFIX
     )
 
-    if test_config is None:
-        # carrega uma instancia de configuracao
-        app.config.from_object(DevelopmentConfig)
-    else:
-        # carrega a instancia test_config passada por parametro
-        app.config.from_mapping(test_config)
+    FlaskDynaconf(app)
 
     # registra as blueprints de resources
     from .resources.campus import bp as bp_campus
@@ -60,7 +52,7 @@ def create_app(test_config=None):
     migrate = Migrate(app, db)  # noqa: F841
     CORS(app)
 
-    app.before_request(log_request)
+    app.before_request(logger.request)
     app.before_request(get_tenant)
 
     return app
