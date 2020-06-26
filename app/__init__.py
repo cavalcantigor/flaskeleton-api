@@ -5,7 +5,6 @@ from flask_cors import CORS
 from .models.db import db, ma
 from flask_migrate import Migrate
 from .logger import logger
-import os
 
 
 __author__ = "Igor Cavalcanti"
@@ -36,7 +35,7 @@ def create_app():
         app.wsgi_app, prefix=settings.API_PREFIX
     )
 
-    FlaskDynaconf(app)
+    FlaskDynaconf().init_app(app)
 
     # registra as blueprints de resources
     from .resources.campus import bp as bp_campus
@@ -49,8 +48,8 @@ def create_app():
 
     db.init_app(app)
     ma.init_app(app)
-    migrate = Migrate(app, db)  # noqa: F841
-    CORS(app)
+    Migrate().init_app(app, db)
+    CORS().init_app(app)
 
     app.before_request(logger.request)
     app.before_request(get_tenant)
