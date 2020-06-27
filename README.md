@@ -58,7 +58,7 @@ Esse projeto utiliza o [dynaconf](https://github.com/rochacbruno/dynaconf/)
 para gerenciar suas configurações. Um arquivo [settings](/config/settings.toml)
 na pasta `config` contém as configurações que devem ser 
 carregadas de acordo com o ambiente que a aplicação está
-rodando, conforme recomenda as recomendações do 
+rodando, conforme recomendado em 
 [12 factor](https://12factor.net/).
 
 Uma variável de ambiente `ENV_FOR_DYNACONF` contém
@@ -73,8 +73,16 @@ estar utilizando a extensão `dynaconf` para `Flask`
 ([flask-extension](https://dynaconf.readthedocs.io/en/2.2.3/guides/flask.html)),
 que injeta configurações de ambiente nas configurações
 da aplicação que podem ser acessadas via `app.config`.
-Além de facilitar o desenvolvimento, facilita a injeção
-de configurações utilizando uma única lib.
+Além de facilitar o desenvolvimento, facilita a integração
+de configurações utilizando uma única lib. Para alterar, 
+via variável de ambiente, uma configuração do `flask`,
+como, por exemplo, a *string* de conexão utilizada pelo
+`SQLAlchemy`, deve-se utilizar:
+```shell script
+export FLASK_SQLALCHEMY_DATABASE_URI='minhastringdeconexao'
+```
+Atenção ao prefixo `FLASK_`, que deve ser utilizado. 
+Isso pode ser alterado também.
 
 Fique à vontade para livremente excluir, alterar e 
 incluir configurações.
