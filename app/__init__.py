@@ -21,7 +21,9 @@ def setup_logger(app):
 
 def get_tenant():
     if settings.ENABLE_MULTI_TENANT:
-        db.choose_tenant(request.headers.get("Context", settings.DEFAULT_TENANT))
+        db.choose_tenant(
+            request.headers.get("Context", settings.DEFAULT_TENANT)
+        )
 
 
 def generic_handler(error):
@@ -52,9 +54,7 @@ def create_app():
     setup_logger(app)
 
     # modificando prefixo da url
-    app.wsgi_app = PrefixMiddleware(
-        app.wsgi_app, prefix=settings.API_PREFIX
-    )
+    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=settings.API_PREFIX)
 
     FlaskDynaconf().init_app(app)
 

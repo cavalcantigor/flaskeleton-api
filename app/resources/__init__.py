@@ -1,7 +1,6 @@
-from flask import jsonify, request
+from flask import request
 from functools import wraps
 from ..errors import TipoErro, UsoInvalido
-from ..logger import logger
 
 
 def login_required(f):
