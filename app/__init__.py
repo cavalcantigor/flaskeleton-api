@@ -1,10 +1,11 @@
 import logging
 from dynaconf import settings, FlaskDynaconf
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from .models.db import db, ma
 from flask_migrate import Migrate
 from .logger import logger
+from .errors import ErroInterno, UsoInvalido, TipoErro
 
 
 __author__ = "Igor Cavalcanti"
@@ -21,6 +22,26 @@ def setup_logger(app):
 def get_tenant():
     if settings.ENABLE_MULTI_TENANT:
         db.choose_tenant(request.headers.get("Context", settings.DEFAULT_TENANT))
+
+
+def generic_handler(error):
+    """
+    Handler genérico de erros. Espera um objeto do tipo
+    Exception que contenha uma funcao [to_dict] e um atributo
+    [status_code] a fim de preparar a resposta do erro no
+    formato JSON.
+
+    :param error: objeto a ser tratado pelo handler.
+    :return: um objeto JSON a ser enviado como resposta para o requisitante.
+    """
+    if isinstance(error, UsoInvalido):
+        logger.info(error.payload)
+    else:
+        logger.error(error.payload, error.ex)
+
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 
 def create_app():
@@ -53,6 +74,9 @@ def create_app():
 
     app.before_request(logger.request)
     app.before_request(get_tenant)
+
+    app.register_error_handler(ErroInterno, generic_handler)
+    app.register_error_handler(UsoInvalido, generic_handler)
 
     return app
 

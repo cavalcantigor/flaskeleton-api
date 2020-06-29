@@ -25,23 +25,3 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
-
-
-def generic_handler(error):
-    """
-    Handler genérico de erros. Espera um objeto do tipo
-    Exception que contenha uma funcao [to_dict] e um atributo
-    [status_code] a fim de preparar a resposta do erro no
-    formato JSON.
-
-    :param error: objeto a ser tratado pelo handler.
-    :return: um objeto JSON a ser enviado como resposta para o requisitante.
-    """
-    if isinstance(error, UsoInvalido):
-        logger.info(error.payload)
-    else:
-        logger.error(error.payload, error.ex)
-
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response

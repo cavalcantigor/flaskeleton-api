@@ -1,12 +1,10 @@
 from flask import make_response, Blueprint, request, jsonify
 from ..controllers.aluno import AlunoController
 from ..errors import ErroInterno, UsoInvalido, TipoErro
-from . import generic_handler, login_required
+from . import login_required
 
 
 bp = Blueprint("aluno", __name__, url_prefix="/aluno")
-bp.register_error_handler(ErroInterno, generic_handler)
-bp.register_error_handler(UsoInvalido, generic_handler)
 
 
 @bp.route("/", methods=["POST"])
