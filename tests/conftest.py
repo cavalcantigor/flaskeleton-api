@@ -20,6 +20,7 @@ def app():
         yield app
 
         with app.app_context():
+            db.close_all_sessions()
             db.drop_all()
 
     except Exception as e:
