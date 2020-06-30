@@ -3,7 +3,8 @@ DEBUG = false
 TESTING = false
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 JSON_AS_ASCII = false
-SQLALCHEMY_BINDS = { development="sqlite:///flaskeleton.db", production="sqlite:///myproduction.db" }
+SQLALCHEMY_DATABASE_URI = "sqlite:///flaskeleton.db"
+SQLALCHEMY_BINDS = { development="sqlite:///flaskeleton.db", production="sqlite:///production.db" }
 DEFAULT_TENANT = "development"
 ENABLE_MULTI_TENANT = true
 API_PREFIX = "/flaskeleton-api"
