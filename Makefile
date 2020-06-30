@@ -67,4 +67,4 @@ lint: ## Verifica qualidade da escrita de codigo
 	flake8 ./app
 
 build-apidocs: ## Gera documentacao com base no arquivo das especificacoes do API Blueprint
-	docker run -it --rm -v $(pwd):/application -w /application markteam/docker-aglio:latest aglio -i ./application/app/docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./application/app/templates/apidocs/index.html
+	docker run -it --rm -v $(pwd):/application -w /application markteam/docker-aglio:latest aglio -i ./docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./app/templates/apidocs/index.html
