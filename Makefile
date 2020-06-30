@@ -66,5 +66,5 @@ prettier: ## Formata o codigo para torna-lo mais bonito
 lint: ## Verifica qualidade da escrita de codigo
 	flake8 ./app
 
-build-apidocs:
-    docker run -it --rm -v $(pwd):/application -w /application markteam/docker-aglio:latest aglio -i ./application/app/docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./application/app/templates/apidocs/index.html
+build-apidocs: ## Gera documentacao com base no arquivo das especificacoes do API Blueprint
+	docker run -it --rm -v $(pwd):/application -w /application markteam/docker-aglio:latest aglio -i ./application/app/docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./application/app/templates/apidocs/index.html
