@@ -127,6 +127,35 @@ da base de dados no container.
 make create-db
 ```
 
+#### Multi-Tenant
+Para solucionar um problema específico de domínio de problema,
+a API foi criada para responder requisições multicontexto.
+Ou seja, a mesma requisição pode carregar um contexto no cabeçalho
+da requisição para apontar qual banco de dados deseja utilizar
+(*multi-tenant*).
+
+Para não haver problemas com o funcionamento do *SQLAlchemy*
+e o *script* de *migrate*, existe nas configurações a variável
+`SQLALCHEMY_DATABASE_URI` que determina a base de dados *default*,
+ou seja, aquela que irá ser criada por padrão. Há ainda
+a variável `SQLALCHEMY_BINDS` que contém os mapeamentos disponíveis
+(nesse caso, `production` é ilustrativo e aponta para uma
+base de dados inexistente). A variável `DEFAULT_TENANT` 
+é responsável por indicar qual o `bind` padrão em caso de não
+fornecimento via cabeçalho do `bind` a ser utilizado. Por fim,
+o *multi-tenant* pode ser desabilitado por meio da variável
+`ENABLE_MULTI_TENANT`.
+
+Todas as variáveis podem ser livremente configuradas de acordo
+com a necessidade do desenvolvedor, inclusive desabilitando
+o recurso de multicontexto.
+
+> Tip: pode-se criar uma cópia do arquivo `flaskeleton.db` criado
+> no passo anterior e renomeá-lo para `production.db` para
+> testar o funcionamento do multi-contexto (lembre-se de passar
+> o contexto no cabeçalho por meio de `Context` para alternar
+> entre os `binds`).
+
 #### Documentação da API
 
 Para acessar a documentação da API, acesse a seguinte rota:
