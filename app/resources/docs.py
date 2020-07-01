@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-from ..errors import ErroInterno, TipoErro
+from ..commons.error import ErroInterno, TipoErro
 
 bp = Blueprint("docs", __name__, url_prefix="/apidocs")
 

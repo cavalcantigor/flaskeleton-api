@@ -5,8 +5,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
 
+from .commons.error import ErroInterno, TipoErro, UsoInvalido
 from .commons.logger import logger
-from .errors import ErroInterno, TipoErro, UsoInvalido
 from .models.db import db, ma
 
 __author__ = "Igor Cavalcanti"

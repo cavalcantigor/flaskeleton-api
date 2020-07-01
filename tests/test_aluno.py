@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from app.errors import ErroInterno, TipoErro
+from app.commons.error import ErroInterno, TipoErro
 
 headers = {
     "Authorization": 123,
