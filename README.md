@@ -39,15 +39,20 @@ make help
 #### Estrutura do projeto
 A aplicação consiste em um pacote principal `app` que contém toda a aplicação.
 Dentro do pacote principal são encontrados pacotes das camadas de controle,
-modelo, visualização (*endpoints*) e acesso aos dados.
+modelo, visualização (*endpoints*), acesso aos dados e um
+modulo comum com ferramental útil.
 
     |-- app
+    |   | -- commons
     |   | -- controllers
     |   | -- dao
-    |   | -- errors
     |   | -- models
     |   | -- resources
-    |   | ...
+    |   | -- templates
+    | -- config
+    | -- docs
+    | -- migrations
+    | -- tests
 
 Além dos pacotes principais, pacotes como `docs` e `templates` são
 auxiliares e utilizados pela *API Blueprint*, além do pacote `migrations`
@@ -124,7 +129,7 @@ Caso suba a aplicação em *docker container*, um comando no
 Makefile está disponível para criação das tabelas dentro
 da base de dados no container.
 ```shell script
-make create-db
+make container-create-db
 ```
 
 #### Multi-Tenant
@@ -165,7 +170,7 @@ http://127.0.0.1:{PORTA}/flaskeleton-api/apidocs/
 ```
 
 A API possui um arquivo de documentação *default* utilizando a especificação do *[Blueprint](https://apiblueprint.org/)*.
-O arquivo está em: `./app/docs/api-blueprint-sample.apib`.
+O arquivo está em: `./docs/api-blueprint-sample.apib`.
 
 Preferimos deixar a responsabilidade da renderização do template HTML para o desenvolvedor.
 Sempre que houver atualizações na especificação de endpoints da sua API, será de responsabilidade do desenvolvedor 
@@ -186,7 +191,7 @@ Usaremos ele:
 Para isso, entre na raíz do projeto e execute o seguinte comando:
 
 ```
-aglio -i ./app/docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./app/templates/apidocs/index.html
+aglio -i ./docs/api-blueprint-sample.apib --theme-full-width --no-theme-condense -o ./app/templates/apidocs/index.html
 ```
 
 O Output será um arquivo ```index.html``` dentro de ```./app/templates/apidocs/index.html```
