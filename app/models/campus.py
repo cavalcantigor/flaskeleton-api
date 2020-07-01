@@ -1,7 +1,8 @@
-from .db import db
-from . import ManagedSchema
-from sqlalchemy import Column, Integer, String
 from marshmallow import fields, post_load
+from sqlalchemy import Column, Integer, String
+
+from . import ManagedSchema
+from .db import db
 
 
 class Campus(db.Model):

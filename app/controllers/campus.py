@@ -1,8 +1,9 @@
-from ..errors import ErroInterno, TipoErro, UsoInvalido
-from ..dao.campus import CampusDAO
-from ..models.campus import Campus, CampusSchema
-from ..logger import logger
 from marshmallow import ValidationError
+
+from ..commons.logger import logger
+from ..dao.campus import CampusDAO
+from ..errors import ErroInterno, TipoErro, UsoInvalido
+from ..models.campus import Campus, CampusSchema
 
 
 class CampusController:
