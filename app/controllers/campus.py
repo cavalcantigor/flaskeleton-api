@@ -1,8 +1,8 @@
 from marshmallow import ValidationError
 
+from ..commons.error import ErroInterno, TipoErro, UsoInvalido
 from ..commons.logger import logger
 from ..dao.campus import CampusDAO
-from ..errors import ErroInterno, TipoErro, UsoInvalido
 from ..models.campus import Campus, CampusSchema
 
 

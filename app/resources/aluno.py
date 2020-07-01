@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, make_response, request
 
+from ..commons.error import ErroInterno, TipoErro, UsoInvalido
 from ..controllers.aluno import AlunoController
-from ..errors import ErroInterno, TipoErro, UsoInvalido
 from . import login_required
 
 bp = Blueprint("aluno", __name__, url_prefix="/aluno")

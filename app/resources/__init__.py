@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import request
 
-from ..errors import TipoErro, UsoInvalido
+from ..commons.error import TipoErro, UsoInvalido
 
 
 def login_required(f):
