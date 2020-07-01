@@ -9,10 +9,6 @@ from .commons.error import ErroInterno, TipoErro, UsoInvalido
 from .commons.logger import logger
 from .models.db import db, ma
 
-__author__ = "Igor Cavalcanti"
-__email__ = "cavalcantigor at gmail dot com"
-__version__ = "v0.1.0"
-
 
 def setup_logger(app):
     gunicorn_logger = logging.getLogger("gunicorn.error")
