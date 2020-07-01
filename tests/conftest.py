@@ -1,9 +1,9 @@
 import pytest
 
 from app import create_app
-from app.models.db import db
 from app.models.aluno import Aluno
 from app.models.campus import Campus
+from app.models.db import db
 
 
 @pytest.fixture(scope="session")
@@ -13,7 +13,9 @@ def app():
 
         with app.app_context():
             db.create_all()
-            db.session.add(Aluno(nome="Joao da Silva", email="joaosilva@email.com"))
+            db.session.add(
+                Aluno(nome="Joao da Silva", email="joaosilva@email.com")
+            )
             db.session.add(Campus(descricao="Campus Teste"))
             db.session.commit()
 

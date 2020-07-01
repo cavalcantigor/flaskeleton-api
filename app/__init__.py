@@ -1,12 +1,13 @@
 import logging
-from dynaconf import settings, FlaskDynaconf
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from .models.db import db, ma
-from flask_migrate import Migrate
-from .logger import logger
-from .errors import ErroInterno, UsoInvalido, TipoErro
 
+from dynaconf import FlaskDynaconf, settings
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from flask_migrate import Migrate
+
+from .commons.logger import logger
+from .errors import ErroInterno, TipoErro, UsoInvalido
+from .models.db import db, ma
 
 __author__ = "Igor Cavalcanti"
 __email__ = "cavalcantigor at gmail dot com"

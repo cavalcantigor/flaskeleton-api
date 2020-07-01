@@ -1,8 +1,9 @@
-from ..errors import UsoInvalido, ErroInterno, TipoErro
-from ..dao.aluno import AlunoDAO
-from ..models.aluno import Aluno, AlunoSchema
-from ..logger import logger
 from marshmallow import ValidationError
+
+from ..commons.logger import logger
+from ..dao.aluno import AlunoDAO
+from ..errors import ErroInterno, TipoErro, UsoInvalido
+from ..models.aluno import Aluno, AlunoSchema
 
 
 class AlunoController:

@@ -1,6 +1,7 @@
-from flask import current_app, has_request_context, request
-from logging import Formatter, StreamHandler
 import logging
+from logging import Formatter, StreamHandler
+
+from flask import current_app, has_request_context, request
 
 error_logger = logging.Logger("app.error.logger")
 error_handler = StreamHandler()

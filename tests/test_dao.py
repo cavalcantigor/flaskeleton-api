@@ -1,7 +1,9 @@
+from unittest.mock import patch
+
+import pytest
+
 from app.dao import DAO
 from app.models.aluno import Aluno
-from unittest.mock import patch
-import pytest
 
 
 def test_get():
@@ -18,7 +20,9 @@ def test_insert():
 
 def test_insert_throw_exception():
     dao = DAO(Aluno(nome="Teste"))
-    with patch('app.models.db.db.session.add', side_effect=Exception('Fake exception')):
+    with patch(
+        "app.models.db.db.session.add", side_effect=Exception("Fake exception")
+    ):
         with pytest.raises(Exception):
             dao.insert()
 
@@ -35,7 +39,9 @@ def test_update():
 
 def test_update_throw_exception():
     dao = DAO(Aluno(nome="Teste"))
-    with patch('app.models.db.db.session.add', side_effect=Exception('Fake exception')):
+    with patch(
+        "app.models.db.db.session.add", side_effect=Exception("Fake exception")
+    ):
         with pytest.raises(Exception):
             dao.update()
 
@@ -48,6 +54,9 @@ def test_delete():
 
 def test_delete_throw_exception():
     dao = DAO(Aluno(nome="Teste"))
-    with patch('app.models.db.db.session.delete', side_effect=Exception('Fake exception')):
+    with patch(
+        "app.models.db.db.session.delete",
+        side_effect=Exception("Fake exception"),
+    ):
         with pytest.raises(Exception):
             dao.delete()

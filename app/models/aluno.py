@@ -1,8 +1,10 @@
-from .db import db
-from . import ManagedSchema
-from sqlalchemy import Column, Integer, String
-from marshmallow import fields, validates, ValidationError, post_load
 import re
+
+from marshmallow import ValidationError, fields, post_load, validates
+from sqlalchemy import Column, Integer, String
+
+from . import ManagedSchema
+from .db import db
 
 
 class Aluno(db.Model):

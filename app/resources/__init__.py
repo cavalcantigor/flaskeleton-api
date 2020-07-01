@@ -1,5 +1,7 @@
-from flask import request
 from functools import wraps
+
+from flask import request
+
 from ..errors import TipoErro, UsoInvalido
 
 
