@@ -54,7 +54,7 @@ style==1.1.6
 toml==0.10.1
 typed-ast==1.4.1
 update==0.0.1
-urllib3==1.25.9
+urllib3==1.26.5
 waitress==1.4.4
 wcwidth==0.2.4
 Werkzeug==1.0.1
